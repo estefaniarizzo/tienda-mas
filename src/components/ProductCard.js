@@ -1,14 +1,12 @@
 import React from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
-  const handleWhatsApp = () => {
-    const phone = '+573028459856'; // Reemplaza con tu número real
-    const message = encodeURIComponent(
-      product.whatsapp_message || `Hola, quiero pedir ${product.name}.`
-    );
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  const { addItem } = useCart();
+  const handleAddToCart = () => {
+    addItem(product, 1);
   };
 
   return (
@@ -33,13 +31,13 @@ const ProductCard = ({ product }) => {
         </span>
       </div>
       <motion.button
-        onClick={handleWhatsApp}
+        onClick={handleAddToCart}
         className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-all"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         <ShoppingBag className="w-5 h-5" />
-        Pedir por WhatsApp
+        Agregar al pedido
       </motion.button>
     </motion.div>
   );

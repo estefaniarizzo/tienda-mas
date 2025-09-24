@@ -26,11 +26,21 @@ const AdminOrders = () => {
           total_price,
           created_at,
           product_id(id, name),
-          user_id(id, username)
+          user_id(id, username),
+          name,
+          phone,
+          address
         `)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setOrders(data || []);
+      // Agrupa por nombre, teléfono y dirección
+      const grouped = {};
+      (data || []).forEach(order => {
+        const key = `${order.name || 'Anónimo'}|${order.phone || ''}|${order.address || ''}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(order);
+      });
+      setOrders(grouped);
     } catch (err) {
       setError('Error al cargar pedidos: ' + err.message);
     }
@@ -61,7 +71,7 @@ const AdminOrders = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       <h2 className="text-xl font-bold flex items-center gap-2">
         <Package className="w-5 h-5 text-green-600" />
-        Pedidos Pendientes ({orders.length})
+        Pedidos Pendientes
       </h2>
 
       {error && <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">{error}</div>}
@@ -107,55 +117,59 @@ const AdminOrders = () => {
       )}
 
       <div className="space-y-4">
-        {orders.map((order) => (
-          <motion.div
-            key={order.id}
-            className={`p-4 rounded-xl border ${
-              order.status === 'pendiente'
-                ? 'border-yellow-200 bg-yellow-50'
-                : order.status === 'enviado'
-                ? 'border-blue-200 bg-blue-50'
-                : 'border-green-200 bg-green-50'
-            }`}
-            whileHover={{ scale: 1.02 }}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-medium">{order.product_id.name} (x{order.quantity})</p>
-                <p className="text-sm text-gray-600">
-                  Usuario: {order.user_id?.username || 'Anónimo'} | Total: ${order.total_price}
-                </p>
-                <p className="text-xs text-gray-500">Creado: {new Date(order.created_at).toLocaleDateString()}</p>
+        {Object.entries(orders).map(([key, pedidos]) => {
+          const [nombre, telefono, direccion] = key.split('|');
+          return (
+            <motion.div
+              key={key}
+              className="p-4 rounded-xl border border-yellow-200 bg-yellow-50"
+              whileHover={{ scale: 1.02 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="mb-2">
+                <p className="font-bold">{nombre}</p>
+                {telefono && <p className="text-sm text-gray-600">Teléfono: {telefono}</p>}
+                {direccion && <p className="text-sm text-gray-600">Dirección: {direccion}</p>}
               </div>
-              <div className="flex items-center gap-2">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  order.status === 'pendiente'
-                    ? 'bg-yellow-200 text-yellow-800'
-                    : order.status === 'enviado'
-                    ? 'bg-blue-200 text-blue-800'
-                    : 'bg-green-200 text-green-800'
-                }`}>
-                  {order.status}
-                </span>
-                <button
-                  onClick={() => {
-                    setEditingOrder(order);
-                    setShowUpdate(true);
-                  }}
-                  className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
+              <div className="space-y-1">
+                {pedidos.map(order => (
+                  <div key={order.id} className="grid grid-cols-12 gap-2 items-center py-1">
+                    <div className="col-span-5 font-medium truncate">{order.product_id.name} (x{order.quantity})</div>
+                    <div className="col-span-3 text-right text-sm text-gray-700">${order.total_price}</div>
+                    <div className="col-span-3 flex justify-center">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        order.status === 'pendiente'
+                          ? 'bg-yellow-200 text-yellow-800'
+                          : order.status === 'enviado'
+                          ? 'bg-blue-200 text-blue-800'
+                          : 'bg-green-200 text-green-800'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </div>
+                    <div className="col-span-1 flex justify-end">
+                      <button
+                        onClick={() => {
+                          setEditingOrder(order);
+                          setShowUpdate(true);
+                        }}
+                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          </motion.div>
-        ))}
+              <p className="text-xs text-gray-500 mt-2">Creado: {new Date(pedidos[0].created_at).toLocaleDateString()}</p>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {orders.length === 0 && (
+      {Object.keys(orders).length === 0 && (
         <motion.div className="text-center py-12">
           <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-500">No hay pedidos</h3>

@@ -28,10 +28,17 @@ export const CartProvider = ({ children }) => {
   const clear = () => setItems([]);
 
   const totalPrice = () => {
-    // parse prices like "$10.000/kg" or "$18.000/docena" -> extract numbers
+    // Soporta precios numéricos y string en COP
     const total = items.reduce((acc, it) => {
-      const m = it.price && it.price.match(/\$([0-9.,]+)/);
-      const num = m ? Number(m[1].replace(/\./g,'')) : 0;
+      let num = 0;
+      if (typeof it.price === 'number') {
+        // Si el precio es menor a 1000, asumimos que está en miles (mock)
+        num = it.price < 1000 ? it.price * 1000 : it.price;
+      } else if (typeof it.price === 'string') {
+        // Si es string, extrae el número
+        const m = it.price.match(/\$([0-9.,]+)/);
+        num = m ? Number(m[1].replace(/\./g, '')) : 0;
+      }
       return acc + num * (it.qty || 1);
     }, 0);
     return total;

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { CartProvider } from './context/CartContext';
+import Cart from './components/Cart';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Header from './components/Header';
@@ -169,6 +171,7 @@ const AppContent = () => {
             </motion.main>
           }
         />
+        <Route path="/cart" element={<Cart />} />
         <Route
           path="/admin"
           element={
@@ -186,7 +189,9 @@ const AppContent = () => {
 
 const App = () => (
   <Router>
-    <AppContent />
+    <CartProvider>
+      <AppContent />
+    </CartProvider>
   </Router>
 );
 

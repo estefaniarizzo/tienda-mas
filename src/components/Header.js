@@ -20,16 +20,15 @@ const Header = ({ onSearch, searchTerm, onLoginClick, isLoggedIn, userRole }) =>
             >
               <ShoppingBag className="w-6 h-6 text-white" />
             </motion.div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                Mas 
-              </h1>
-          <h1 className="text-2xl font-bold text-orange-500 inline">&</h1>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                Mas
-              </h1>
-              <p className="text-sm text-gray-500">Productos del Campo</p>
-            </div>
+            <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                  <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">Más</span>
+                  <span className="text-2xl font-bold text-orange-500 mx-1">&</span>
+                  <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">Más</span>
+                </div>
+                <p className="text-sm text-gray-500">Una experiencia diferente.</p>
+                <span className="text-2xl font-bold text-orange-400 mx-1">MINI-MARKET</span>
+              </div>
           </Link>
 
           <div className="flex items-center gap-4 w-full max-w-md">

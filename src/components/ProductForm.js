@@ -15,7 +15,7 @@ const ProductForm = ({ onProductAdded, editingProduct = null, onSave = null, onC
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const categories = ['hortalizas', 'huevos', 'plasticos', 'frutas','vegetales','tuberculos','hongos','desechables'];
+  const categories = ['hortalizas', 'huevos', 'frutas','vegetales','tuberculos','hongos','desechables'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();

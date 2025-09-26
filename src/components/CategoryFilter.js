@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Filter } from 'lucide-react';
 
-const categories = ['Todas', 'hortalizas', 'huevos', 'plasticos', 'frutas','vegetales','tuberculos','hongos','desechables'];
+const categories = ['Todas', 'hortalizas', 'huevos', 'frutas','vegetales','tuberculos','hongos','desechables'];
 
 const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
   return (

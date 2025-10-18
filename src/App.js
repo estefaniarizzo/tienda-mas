@@ -11,6 +11,7 @@ import LoginModal from './components/LoginModal';
 import AdminPanel from './components/AdminPanel';
 import AuthCallback from './components/AuthCallback';
 import { supabase } from './utils/supabase';
+import Footer from './components/Footer';
 
 const AppContent = () => {
   const [products, setProducts] = useState([]);
@@ -137,7 +138,7 @@ const AppContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex flex-col">
       <Header
         onSearch={setSearchTerm}
         searchTerm={searchTerm}
@@ -145,44 +146,53 @@ const AppContent = () => {
         isLoggedIn={isLoggedIn}
         userRole={user?.role || ''}
       />
+
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={handleLogin} />
+
       {currentProduct && <WhatsAppButton product={currentProduct} />}
-      <Routes>
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route
-          path="/"
-          element={
-            <motion.main
-              className="container mx-auto px-4 py-8 max-w-7xl"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6 }}
-            >
-              <CategoryFilter
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-              />
-              <ProductList
-                products={filteredProducts}
-                onWhatsApp={handleWhatsApp}
-                loading={loading}
-                error={error}
-              />
-            </motion.main>
-          }
-        />
-        <Route path="/cart" element={<Cart />} />
-        <Route
-          path="/admin"
-          element={
-            isLoggedIn && user?.role === 'admin' ? (
-              <AdminPanel onLogout={handleLogout} onProductAdded={handleProductAdded} user={user} />
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-      </Routes>
+
+      {/* Contenido principal */}
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/"
+            element={
+              <motion.main
+                className="container mx-auto px-4 py-8 max-w-7xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <CategoryFilter
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
+                />
+                <ProductList
+                  products={filteredProducts}
+                  onWhatsApp={handleWhatsApp}
+                  loading={loading}
+                  error={error}
+                />
+              </motion.main>
+            }
+          />
+          <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/admin"
+            element={
+              isLoggedIn && user?.role === 'admin' ? (
+                <AdminPanel onLogout={handleLogout} onProductAdded={handleProductAdded} user={user} />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+        </Routes>
+      </div>
+
+      {/* 🚀 Footer aquí */}
+      <Footer />
     </div>
   );
 };
